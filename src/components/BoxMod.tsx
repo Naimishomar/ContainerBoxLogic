@@ -17,19 +17,23 @@ function BoxModel() {
   const [stackable, setStackable] = useState(true);
   const [error, setError] = useState<string>("");
 
+  const [boxCoordinates, setBoxCoordinates] = useState<
+    { container: number; x: number; y: number; z: number }[]
+  >([]);
+
   useEffect(() => {
     setError("");
+    setBoxCoordinates([]);
+
     const bLength = Number(boxLength);
     const bWidth = Number(boxWidth);
     const bHeight = Number(boxHeight);
-    // const bWeight = Number(boxWeight);
     const bQuantity = Number(boxQuantity);
     const bStackLimit = Number(boxStackLimit) || 1;
 
     const cLength = Number(containerLength);
     const cWidth = Number(containerWidth);
     const cHeight = Number(containerHeight);
-    // const cWeight = Number(containerWeight);
 
     if (!bLength || !bWidth || !bHeight) {
       setError("Box dimensions must be greater than 0");
@@ -46,10 +50,10 @@ function BoxModel() {
       setContainersRequired(0);
       return;
     }
+
     const edgeLength = Math.floor(cLength / bLength);
     const edgeWidth = Math.floor(cWidth / bWidth);
     const edgeHeight = Math.floor(cHeight / bHeight);
-
 
     const boxesPerLayer = edgeLength * edgeWidth;
     if (boxesPerLayer === 0) {
@@ -66,9 +70,48 @@ function BoxModel() {
       setContainersRequired(0);
       return;
     }
+
     const required = Math.ceil(bQuantity / boxesPerContainer);
     setContainersRequired(required);
-  }, [boxLength, boxWidth, boxHeight, boxWeight, boxQuantity, boxStackLimit, containerLength, containerWidth, containerHeight, containerWeight, stackable]);
+
+    //Generate coordinates (fill Z → Y → X)
+    const coords: { container: number; x: number; y: number; z: number }[] = [];
+    let placed = 0;
+
+    for (let c = 1; c <= required; c++) {
+      for (let x = 0; x < edgeLength; x++) {
+        for (let z = 0; z < maxLayers; z++) {
+          for (let y = 0; y < edgeWidth; y++) {
+            if (placed >= bQuantity) break;
+            coords.push({
+              container: c,
+              x: x * bLength,
+              y: y * bWidth,
+              z: z * bHeight,
+            });
+            placed++;
+          }
+          if (placed >= bQuantity) break;
+        }
+        if (placed >= bQuantity) break;
+      }
+      if (placed >= bQuantity) break;
+    }
+
+    setBoxCoordinates(coords);
+  }, [
+    boxLength,
+    boxWidth,
+    boxHeight,
+    boxWeight,
+    boxQuantity,
+    boxStackLimit,
+    containerLength,
+    containerWidth,
+    containerHeight,
+    containerWeight,
+    stackable,
+  ]);
 
   return (
     <div className="w-full min-h-screen bg-black text-white flex flex-col items-center py-10 gap-10">
@@ -135,8 +178,12 @@ function BoxModel() {
             onChange={(e) => setStackable(e.target.value === "stackable")}
             className="py-2 outline-none text-white"
           >
-            <option value="stackable" className="text-black">Stackable</option>
-            <option value="unstackable" className="text-black">Unstackable</option>
+            <option value="stackable" className="text-black">
+              Stackable
+            </option>
+            <option value="unstackable" className="text-black">
+              Unstackable
+            </option>
           </select>
         </div>
 
@@ -185,6 +232,35 @@ function BoxModel() {
           <h1>Containers Required: {containersRequired}</h1>
         )}
       </div>
+
+      {/* 🔹 Coordinates Table */}
+      {boxCoordinates.length > 0 && (
+        <div className="w-3/4">
+          <h2 className="text-xl font-semibold mb-3">Box Coordinates</h2>
+          <table className="w-full border border-gray-500 text-center">
+            <thead className="bg-gray-700">
+              <tr>
+                <th className="border px-2 py-1">Box</th>
+                <th className="border py-1">Container</th>
+                <th className="border px-2 py-1">X</th>
+                <th className="border px-2 py-1">Y</th>
+                <th className="border px-2 py-1">Z</th>
+              </tr>
+            </thead>
+            <tbody>
+              {boxCoordinates.map((box, idx) => (
+                <tr key={idx} className="hover:bg-gray-800">
+                  <td className="border px-2 py-1">{idx +1}</td>
+                  <td className="border py-1">{box.container}</td>
+                  <td className="border px-2 py-1">{box.x}</td>
+                  <td className="border px-2 py-1">{box.y}</td>
+                  <td className="border px-2 py-1">{box.z}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
