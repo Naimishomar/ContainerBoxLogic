@@ -16,6 +16,7 @@ function BoxModel() {
   const [containersRequired, setContainersRequired] = useState<number>(0);
   const [stackable, setStackable] = useState(true);
   const [error, setError] = useState<string>("");
+  const [show, setShow] = useState(true);
 
   const [boxCoordinates, setBoxCoordinates] = useState<
     { container: number; x: number; y: number; z: number }[]
@@ -74,10 +75,8 @@ function BoxModel() {
     const required = Math.ceil(bQuantity / boxesPerContainer);
     setContainersRequired(required);
 
-    //Generate coordinates (fill Z → Y → X)
     const coords: { container: number; x: number; y: number; z: number }[] = [];
     let placed = 0;
-
     for (let c = 1; c <= required; c++) {
       for (let x = 0; x < edgeLength; x++) {
         for (let z = 0; z < maxLayers; z++) {
@@ -97,21 +96,8 @@ function BoxModel() {
       }
       if (placed >= bQuantity) break;
     }
-
     setBoxCoordinates(coords);
-  }, [
-    boxLength,
-    boxWidth,
-    boxHeight,
-    boxWeight,
-    boxQuantity,
-    boxStackLimit,
-    containerLength,
-    containerWidth,
-    containerHeight,
-    containerWeight,
-    stackable,
-  ]);
+  }, [boxLength,boxWidth,boxHeight,boxWeight,boxQuantity,boxStackLimit,containerLength,containerWidth,  containerHeight,containerWeight,stackable,]);
 
   return (
     <div className="w-full min-h-screen bg-black text-white flex flex-col items-center py-10 gap-10">
@@ -121,7 +107,7 @@ function BoxModel() {
           <h1 className="text-2xl font-semibold text-center">Boxes</h1>
           <label>Length</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter length"
             value={boxLength}
             onChange={(e) => setBoxLength(e.target.value)}
@@ -129,7 +115,7 @@ function BoxModel() {
           />
           <label>Width</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter width"
             value={boxWidth}
             onChange={(e) => setBoxWidth(e.target.value)}
@@ -137,7 +123,7 @@ function BoxModel() {
           />
           <label>Height</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter height"
             value={boxHeight}
             onChange={(e) => setBoxHeight(e.target.value)}
@@ -145,7 +131,7 @@ function BoxModel() {
           />
           <label>Weight</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter weight"
             value={boxWeight}
             onChange={(e) => setBoxWeight(e.target.value)}
@@ -153,7 +139,7 @@ function BoxModel() {
           />
           <label>Quantity</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter quantity"
             value={boxQuantity}
             onChange={(e) => setBoxQuantity(e.target.value)}
@@ -164,7 +150,7 @@ function BoxModel() {
             <>
               <label>Stack Limit</label>
               <input
-                type="number"
+                type="text"
                 placeholder="Enter stack limit"
                 value={boxStackLimit}
                 onChange={(e) => setBoxStackLimit(e.target.value)}
@@ -192,7 +178,7 @@ function BoxModel() {
           <h1 className="text-2xl font-semibold text-center">Container</h1>
           <label>Length</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter length"
             value={containerLength}
             onChange={(e) => setContainerLength(e.target.value)}
@@ -200,7 +186,7 @@ function BoxModel() {
           />
           <label>Width</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter width"
             value={containerWidth}
             onChange={(e) => setContainerWidth(e.target.value)}
@@ -208,7 +194,7 @@ function BoxModel() {
           />
           <label>Height</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter height"
             value={containerHeight}
             onChange={(e) => setContainerHeight(e.target.value)}
@@ -216,7 +202,7 @@ function BoxModel() {
           />
           <label>Max Weight</label>
           <input
-            type="number"
+            type="text"
             placeholder="Enter max weight"
             value={containerWeight}
             onChange={(e) => setContainerWeight(e.target.value)}
@@ -233,9 +219,12 @@ function BoxModel() {
         )}
       </div>
 
+      <button onClick={() => setShow(!show)} className="bg-blue-500 px-4 py-2 rounded mt-2 w-full">
+        {show ? "Hide" : "Show"} Coordinates</button>
+
       {/* 🔹 Coordinates Table */}
       {boxCoordinates.length > 0 && (
-        <div className="w-3/4">
+        <div className={`w-3/4 ${show ? "block" : "hidden"}`}>
           <h2 className="text-xl font-semibold mb-3">Box Coordinates</h2>
           <table className="w-full border border-gray-500 text-center">
             <thead className="bg-gray-700">
@@ -245,6 +234,7 @@ function BoxModel() {
                 <th className="border px-2 py-1">X</th>
                 <th className="border px-2 py-1">Y</th>
                 <th className="border px-2 py-1">Z</th>
+                <th className="border px-2 py-1">Type</th>
               </tr>
             </thead>
             <tbody>
@@ -255,6 +245,7 @@ function BoxModel() {
                   <td className="border px-2 py-1">{box.x}</td>
                   <td className="border px-2 py-1">{box.y}</td>
                   <td className="border px-2 py-1">{box.z}</td>
+                  <td className="border px-2 py-1">{stackable ? "stackable" : "unstackable"}</td>
                 </tr>
               ))}
             </tbody>
