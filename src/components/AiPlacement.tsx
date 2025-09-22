@@ -108,6 +108,8 @@ const handleOptimize = async () => {
       [
         { "boxId": number, "container": number, "x": number, "y": number, "z": number }
       ]
+
+      Note: Very importantly I want container will fill its width(y-axis) and height(z-axis) first then it will move to length(x-axis). And note that unstackable boxes will always be placed on the top of stackable boxes.
     `;
 
     const response = await ai.models.generateContent({
