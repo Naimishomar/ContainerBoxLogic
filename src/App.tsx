@@ -1,4 +1,4 @@
-import AiPlacement from "./components/aiPlacement"
+import AiPlacement from "./components/AiPlacement"
   // import BoxModel from "./components/BoxMod"
 
   function App() {
