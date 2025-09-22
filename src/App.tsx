@@ -1,4 +1,4 @@
-  import AiPlacement from "./components/aiPlacement.tsx"
+import AiPlacement from "./components/aiPlacement"
   // import BoxModel from "./components/BoxMod"
 
   function App() {
