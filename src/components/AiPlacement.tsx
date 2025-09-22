@@ -44,6 +44,7 @@ export default function AiPlacement() {
   const [placements, setPlacements] = useState<Placement[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [containerCount, setContainerCount] = useState(0);
 
   // Add new box
   const addBox = () => {
@@ -127,6 +128,9 @@ const handleOptimize = async () => {
     
     const parsed: Placement[] = JSON.parse(text);
     setPlacements(parsed);
+
+    const maxContainer = Math.max(...parsed.map((p) => p.container));
+    setContainerCount(maxContainer);
   } catch (err) {
     console.error(err);
     setError("Failed to optimize packing. Try again.");
@@ -207,6 +211,12 @@ const handleOptimize = async () => {
       >
         {loading ? "Optimizing..." : "🚀 Optimize Packing"}
       </button>
+
+      {containerCount > 0 && (
+        <p className="mt-3 text-green-400 font-semibold text-center">
+          Total containers required: {containerCount}
+        </p>
+      )}
 
       {/* Error */}
       {error && <p className="text-red-400">{error}</p>}
