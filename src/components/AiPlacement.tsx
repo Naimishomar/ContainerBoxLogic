@@ -191,7 +191,7 @@ const handleOptimize = async () => {
         ))}
         <button
           onClick={addBox}
-          className="bg-green-500 px-4 py-2 rounded mt-2"
+          className="bg-green-500 px-4 py-2 rounded mt-2 hover:bg-green-600 cursor-pointer"
         >
           ➕ Add Box
         </button>
@@ -201,7 +201,7 @@ const handleOptimize = async () => {
       <button
         onClick={handleOptimize}
         disabled={loading}
-        className="bg-blue-500 px-6 py-3 rounded-lg font-bold mt-5"
+        className="bg-blue-500 px-6 py-3 rounded-lg font-bold mt-5 hover:bg-blue-600 cursor-pointer"
       >
         {loading ? "Optimizing..." : "🚀 Optimize Packing"}
       </button>
