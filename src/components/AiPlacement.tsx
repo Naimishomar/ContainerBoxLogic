@@ -77,6 +77,10 @@ const handleOptimize = async () => {
   setPlacements([]);
 
   try {
+    if(container.length === "" || container.width === "" || container.height === "" || container.maxWeight === ""){
+      setError("Please fill all the fields");
+      return;
+    }
     const cLength = Number(container.length);
     const cWidth = Number(container.width);
     const cHeight = Number(container.height);
