@@ -1,11 +1,8 @@
-import AiPlacement from "./components/AiPlacement"
-  // import BoxModel from "./components/BoxMod"
-
+import BoxLogicUI from "./components/BoxUI"
   function App() {
     return (
       <div className="bg-black h-full text-white">
-        {/* <BoxModel/> */}
-        <AiPlacement/>
+        <BoxLogicUI/>
       </div>
     )
   }
